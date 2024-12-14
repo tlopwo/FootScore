@@ -1,0 +1,14 @@
+.team-list {
+    padding: 16px;
+  }
+  .team-list li {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .team-list button {
+    color: #b91c1c;
+  }
+  .team-list button:hover {
+    color: #7f1d1d;
+  }
