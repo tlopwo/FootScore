@@ -1,6 +1,7 @@
 import React from "react";
 import Header from "./components/Header";
 import TeamList from "./components/TeamList";
+import NewsSection from "./components/NewsSection";
 import Footer from "./components/Footer";
 
 const App = () => {
@@ -9,6 +10,7 @@ const App = () => {
       <Header />
       <main className="flex-grow">
         <TeamList />
+        <NewsSection />
       </main>
       <Footer />
     </div>
