@@ -1,109 +1,53 @@
 import React, { useState, useEffect } from "react";
 
-const TeamList = () => {
-  const [teams, setTeams] = useState(() => {
-    // Wczytanie drużyn z Local Storage
-    const savedTeams = localStorage.getItem("teams");
-    return savedTeams ? JSON.parse(savedTeams) : [];
-  });
-  const [teamName, setTeamName] = useState("");
+const MatchesList = () => {
+  const [matches, setMatches] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Zapisanie drużyn do Local Storage
-    localStorage.setItem("teams", JSON.stringify(teams));
-  }, [teams]);
+    const fetchMatches = async () => {
+      const myHeaders = new Headers();
+      myHeaders.append("x-rapidapi-key", "process.env.REACT_APP_RAPIDAPI_KEY");
+      myHeaders.append("x-rapidapi-host", "v3.football.api-sports.io");
 
-  const addTeam = (e) => {
-    e.preventDefault();
-    if (teamName.trim()) {
-      setTeams([...teams, teamName.trim()]);
-      setTeamName("");
-    }
-  };
-  const removeTeam = (index) => {
-    setTeams(teams.filter((_, i) => i !== index)); // Usunięcie drużyny po indeksie
-  };
+      const requestOptions = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow",
+      };
+
+      try {
+        const response = await fetch("https://v3.football.api-sports.io/matches", requestOptions);
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log(result); // Debug: sprawdź strukturę odpowiedzi
+        setMatches(result.response); // Zakładam, że dane są w `response`
+      } catch (error) {
+        console.error("Fetch error:", error);
+        setError(error.message);
+      }
+    };
+
+    fetchMatches();
+  }, []);
 
   return (
-    <div className="p-4">
-      <h2 className="text-lg font-semibold mb-4">Twoje ulubione drużyny:</h2>
-      <ul className="list-disc list-inside mb-4">
-        {teams.map((team, index) => (
-          <li key={index} className="flex justify-between items-center">
-            <span>{team}</span>
-            <button
-              onClick={() => removeTeam(index)}
-              className="text-red-600 hover:text-red-800 ml-2"
-            >
-              Usuń
-            </button>
+    <div>
+      <h1>Matches List</h1>
+      {error && <p style={{ color: "red" }}>Error: {error}</p>}
+      <ul>
+        {matches.map((match) => (
+          <li key={match.fixture.id}>
+            {match.teams.home.name} vs {match.teams.away.name} - {match.fixture.date}
           </li>
         ))}
       </ul>
-
-      <form onSubmit={addTeam} className="flex items-center space-x-2">
-        <input
-          type="text"
-          value={teamName}
-          onChange={(e) => setTeamName(e.target.value)}
-          placeholder="Dodaj drużynę"
-          className="border rounded p-2 flex-grow"
-        />
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Dodaj
-        </button>
-      </form>
     </div>
   );
 };
 
-export default TeamList;
-
-// import React, { useState } from "react";
-
-// const TeamList = () => {
-//   const [teams, setTeams] = useState([]); // Lista drużyn
-//   const [teamName, setTeamName] = useState(""); // Wartość w formularzu
-
-//   // Funkcja dodająca drużynę
-//   const addTeam = (e) => {
-//     e.preventDefault(); // Zapobiegamy odświeżeniu strony
-//     if (teamName.trim()) {
-//       setTeams([...teams, teamName.trim()]); // Dodajemy drużynę do listy
-//       setTeamName(""); // Czyścimy pole tekstowe
-//     }
-//   };
-
-//   return (
-//     <div className="p-4">
-//       <h2 className="text-lg font-semibold mb-4">Twoje ulubione drużyny:</h2>
-//       <ul className="list-disc list-inside mb-4">
-//         {teams.map((team, index) => (
-//           <li key={index}>{team}</li>
-//         ))}
-//       </ul>
-
-//       {/* Formularz dodawania drużyn */}
-//       <form onSubmit={addTeam} className="flex items-center space-x-2">
-//         <input
-//           type="text"
-//           value={teamName}
-//           onChange={(e) => setTeamName(e.target.value)}
-//           placeholder="Dodaj drużynę"
-//           className="border rounded p-2 flex-grow"
-//         />
-//         <button
-//           type="submit"
-//           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-//         >
-//           Dodaj
-//         </button>
-//       </form>
-//     </div>
-//   );
-// };
-
-// export default TeamList;
+export default MatchesList;
