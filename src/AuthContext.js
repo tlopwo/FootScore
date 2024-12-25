@@ -10,10 +10,28 @@ export const AuthProvider = ({ children }) => {
     return savedUser ? JSON.parse(savedUser) : null;
   });
 
-  const login = (username) => {
-    const newUser = { username };
-    setUser(newUser);
-    localStorage.setItem("user", JSON.stringify(newUser));
+  const login = (username, password) => {
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const foundUser = users.find(
+      (u) => u.username === username && u.password === password
+    );
+    if (foundUser) {
+      setUser(foundUser);
+      localStorage.setItem("user", JSON.stringify(foundUser));
+      return true;
+    }
+    return false;
+  };
+
+  const register = (username, password) => {
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    if (users.find((u) => u.username === username)) {
+      return false;
+    }
+    const newUser = { username, password };
+    users.push(newUser);
+    localStorage.setItem("users", JSON.stringify(users));
+    return true;
   };
 
   const logout = () => {
@@ -22,7 +40,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

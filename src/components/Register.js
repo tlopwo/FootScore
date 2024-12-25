@@ -1,31 +1,32 @@
 import React, { useState } from "react";
-import { useAuth } from "../AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../AuthContext";
 
-const Login = () => {
-  const { login } = useAuth();
+
+const Register = () => {
+  const { register } = useAuth();
   const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleLogin = (e) => {
+  const handleRegister = (e) => {
     e.preventDefault();
-    if (login(username, password)) {
-      navigate("/"); // Przekierowanie po zalogowaniu
+    if (register(username, password)) {
+      navigate("/");
     } else {
-      setError("Nieprawidłowa nazwa użytkownika lub hasło.");
+      setError("Nazwa użytkownika jest już zajęta.");
     }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <form
-        onSubmit={handleLogin}
+        onSubmit={handleRegister}
         className="p-6 bg-white rounded shadow-lg max-w-sm w-full"
       >
-        <h2 className="text-2xl font-semibold mb-4">Logowanie</h2>
+        <h2 className="text-2xl font-semibold mb-4">Rejestracja</h2>
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <input
           type="text"
@@ -45,18 +46,18 @@ const Login = () => {
         />
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+          className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
         >
-          Zaloguj się
+          Zarejestruj się
         </button>
         <p className="mt-4 text-center">
-          Nie masz konta?{" "}
+          Masz już konto?{" "}
           <button
             type="button"
-            onClick={() => navigate("/register")}
+            onClick={() => navigate("/")}
             className="text-blue-600 hover:underline"
           >
-            Zarejestruj się
+            Zaloguj się
           </button>
         </p>
       </form>
@@ -64,4 +65,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
