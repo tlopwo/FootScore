@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -33,7 +33,10 @@ const App = () => {
             />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/profile" element={<UserProfile />} />
+            <Route
+              path="/profile"
+              element={user ? <UserProfile /> : <Navigate to="/login" />}
+            />
           </Routes>
         </main>
         <Footer />
