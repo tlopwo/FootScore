@@ -3,21 +3,29 @@ import { useAuth } from "../AuthContext";
 
 const UserProfile = () => {
   const { user, updateFavoriteTeams, changePassword, logout } = useAuth();
-  const [newTeams, setNewTeams] = useState(user.favoriteTeams?.join(", ") || "");
+  const [newTeams, setNewTeams] = useState("");
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  const handleUpdateTeams = () => {
+  const handleAddTeams = () => {
     if (!newTeams.trim()) {
-      setError("Lista drużyn nie może być pusta.");
+      setError("Pole drużyn nie może być puste.");
       return;
     }
     const teamsArray = newTeams.split(",").map((team) => team.trim());
-    updateFavoriteTeams(teamsArray);
-    setMessage("Ulubione drużyny zostały zaktualizowane.");
-    setError(""); // Clear any previous errors
+    updateFavoriteTeams([...user.favoriteTeams, ...teamsArray]);
+    setMessage("Drużyny zostały dodane do ulubionych.");
+    setError("");
+    setNewTeams(""); 
+  };
+
+  const handleRemoveTeam = (teamToRemove) => {
+    const updatedTeams = user.favoriteTeams.filter((team) => team !== teamToRemove);
+    updateFavoriteTeams(updatedTeams);
+    setMessage(`Drużyna "${teamToRemove}" została usunięta z ulubionych.`);
+    setError("");
   };
 
   const handleChangePassword = () => {
@@ -28,7 +36,9 @@ const UserProfile = () => {
     const success = changePassword(oldPassword, newPassword);
     if (success) {
       setMessage("Hasło zostało zmienione.");
-      setError(""); // Clear any previous errors
+      setError("");
+      setOldPassword("");
+      setNewPassword("");
     } else {
       setError("Nieprawidłowe stare hasło.");
     }
@@ -44,25 +54,36 @@ const UserProfile = () => {
         <strong>Email:</strong> {user.email}
       </p>
 
-      {/* Ulubione Drużyny */}
       <div className="mt-6">
         <h2 className="text-xl font-bold mb-2">Ulubione Drużyny</h2>
+        <ul className="list-disc pl-5">
+          {user.favoriteTeams.map((team, index) => (
+            <li key={index} className="flex justify-between items-center">
+              {team}
+              <button
+                onClick={() => handleRemoveTeam(team)}
+                className="text-red-500 text-sm ml-4 hover:underline"
+              >
+                Usuń
+              </button>
+            </li>
+          ))}
+        </ul>
         <input
           type="text"
           value={newTeams}
           onChange={(e) => setNewTeams(e.target.value)}
-          className="border p-2 w-full mb-2"
-          placeholder="Wpisz drużyny, oddzielone przecinkami"
+          className="border p-2 w-full mt-2 mb-2"
+          placeholder="Dodaj drużyny, oddzielone przecinkami"
         />
         <button
-          onClick={handleUpdateTeams}
+          onClick={handleAddTeams}
           className="bg-blue-500 text-white px-4 py-2 rounded"
         >
-          Zaktualizuj Drużyny
+          Dodaj Drużyny
         </button>
       </div>
 
-      {/* Zmiana Hasła */}
       <div className="mt-6">
         <h2 className="text-xl font-bold mb-2">Zmiana Hasła</h2>
         <input
@@ -87,11 +108,9 @@ const UserProfile = () => {
         </button>
       </div>
 
-      {/* Komunikaty */}
       {message && <p className="mt-4 text-green-600">{message}</p>}
       {error && <p className="mt-4 text-red-600">{error}</p>}
 
-      {/* Wylogowanie */}
       <button
         onClick={logout}
         className="bg-red-500 text-white px-4 py-2 rounded mt-6"

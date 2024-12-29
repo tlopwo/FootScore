@@ -8,17 +8,23 @@ const TeamList = () => {
 
   return (
     <div className="p-6 max-w-lg mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Ulubione Drużyny</h1>
+      <h1 className="text-2xl font-bold mb-4">Twoje Ulubione Drużyny</h1>
       {favoriteTeams.length > 0 ? (
         <ul className="list-disc pl-5">
-          {favoriteTeams.map((team, index) => (
-            <li key={index} className="text-lg mb-2">
-              {team}
-            </li>
-          ))}
-        </ul>
+        {user.favoriteTeams.map((team, index) => (
+          <li key={index} className="flex justify-between items-center">
+            {team}
+            <button
+              onClick={() => handleRemoveTeam(team)}
+              className="text-red-500 text-sm ml-4 hover:underline"
+            >
+              Usuń
+            </button>
+          </li>
+        ))}
+      </ul>
       ) : (
-        <p className="text-gray-500">Nie dodałeś jeszcze ulubionych drużyn.</p>
+        <p className="text-gray-500">Nie obserwujesz jeszcze żadnych drużyn.</p>
       )}
     </div>
   );
