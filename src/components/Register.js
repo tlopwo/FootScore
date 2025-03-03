@@ -2,21 +2,22 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 
-
 const Register = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
   const handleRegister = (e) => {
     e.preventDefault();
-    if (register(username, password)) {
+    const success = register(username, email, password);
+    if (success) {
       navigate("/");
     } else {
-      setError("Nazwa użytkownika jest już zajęta.");
+      setError("Nazwa użytkownika lub e-mail są już zajęte.");
     }
   };
 
@@ -26,8 +27,12 @@ const Register = () => {
         onSubmit={handleRegister}
         className="p-6 bg-white rounded shadow-lg max-w-sm w-full"
       >
-        <h2 className="text-2xl font-semibold mb-4">Rejestracja</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-center">
+          Rejestracja
+        </h2>
+        
         {error && <p className="text-red-500 mb-4">{error}</p>}
+
         <input
           type="text"
           placeholder="Nazwa użytkownika"
@@ -36,6 +41,16 @@ const Register = () => {
           required
           className="w-full p-2 border rounded mb-4"
         />
+
+        <input
+          type="email"
+          placeholder="Adres e-mail"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          className="w-full p-2 border rounded mb-4"
+        />
+
         <input
           type="password"
           placeholder="Hasło"
@@ -44,12 +59,14 @@ const Register = () => {
           required
           className="w-full p-2 border rounded mb-4"
         />
+
         <button
           type="submit"
           className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
         >
           Zarejestruj się
         </button>
+
         <p className="mt-4 text-center">
           Masz już konto?{" "}
           <button

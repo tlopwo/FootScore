@@ -8,6 +8,7 @@ import NewsSection from "./components/NewsSection";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import UserProfile from "./components/UserProfile";
+import ResetPassword from "./components/ResetPassword";
 
 const App = () => {
   const { user } = useAuth();
@@ -33,6 +34,7 @@ const App = () => {
             />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route
               path="/profile"
               element={user ? <UserProfile /> : <Navigate to="/login" />}
