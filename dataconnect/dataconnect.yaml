@@ -1,0 +1,12 @@
+specVersion: "v1beta"
+serviceId: "footscore"
+location: "us-central1"
+schema:
+  source: "./schema"
+  datasource:
+    postgresql:
+      database: "fdcdb"
+      cloudSql:
+        instanceId: "footscore-fdc"
+      # schemaValidation: "COMPATIBLE"
+connectorDirs: ["./connector"]
