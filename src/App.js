@@ -1,25 +1,50 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { useAuth } from "./AuthContext";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import TeamList from "./components/TeamList";
+import NewsSection from "./components/NewsSection";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import UserProfile from "./components/UserProfile";
+import ResetPassword from "./components/ResetPassword";
 
-function App() {
+const App = () => {
+  const { user } = useAuth();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-grow">
+          <Routes>
+            <Route
+              path="/"
+              element={
+                user ? (
+                  <>
+                    <TeamList />
+                    <NewsSection />
+                  </>
+                ) : (
+                  <Login />
+                )
+              }
+            />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route
+              path="/profile"
+              element={user ? <UserProfile /> : <Navigate to="/login" />}
+            />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </Router>
   );
-}
+};
 
 export default App;
