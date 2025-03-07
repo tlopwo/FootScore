@@ -6,19 +6,23 @@ const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
 
-    const success = login(username, password);
+    console.log("Próba logowania, email:", email);
+    const success = await login(email, password);
+    console.log("Wynik logowania:", success);
 
     if (success) {
+      console.log("Logowanie udane, przekierowuję...");
       navigate("/");
     } else {
-      setError("Nieprawidłowy login lub hasło.");
+      setError("Nieprawidłowy email lub hasło.");
     }
   };
 
@@ -31,10 +35,10 @@ const Login = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
-            type="text"
-            placeholder="Nazwa użytkownika"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full p-2 border rounded"
             required
           />
@@ -48,7 +52,10 @@ const Login = () => {
             required
           />
 
-          <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+          >
             Zaloguj się
           </button>
         </form>

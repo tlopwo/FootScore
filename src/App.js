@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { useAuth } from "./AuthContext";
+import { AuthProvider, useAuth } from "./AuthContext";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import TeamList from "./components/TeamList";
@@ -10,7 +10,7 @@ import Register from "./components/Register";
 import UserProfile from "./components/UserProfile";
 import ResetPassword from "./components/ResetPassword";
 
-const App = () => {
+const AppContent = () => {
   const { user } = useAuth();
 
   return (
@@ -46,5 +46,11 @@ const App = () => {
     </Router>
   );
 };
+
+const App = () => (
+  <AuthProvider>
+    <AppContent />
+  </AuthProvider>
+);
 
 export default App;

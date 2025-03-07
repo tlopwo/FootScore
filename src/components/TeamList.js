@@ -1,9 +1,24 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../AuthContext";
+import { db } from "../firebaseConfig";
+import { ref, onValue } from "firebase/database";
 
 const TeamList = () => {
-  const { user, setUser } = useAuth(); 
-  const favoriteTeams = user?.favoriteTeams || [];
+  const { user } = useAuth();
+  const [favoriteTeams, setFavoriteTeams] = useState(user?.favoriteTeams || []);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const userTeamsRef = ref(db, `users/${user.uid}/favoriteTeams`);
+    const unsubscribe = onValue(userTeamsRef, (snapshot) => {
+      const data = snapshot.val();
+      console.log("Pobrane favoriteTeams z bazy:", data);
+      setFavoriteTeams(data || []); 
+    });
+
+    return () => unsubscribe();
+  }, [user]); 
 
   return (
     <div className="p-6 max-w-lg mx-auto">

@@ -21,6 +21,7 @@ const UserProfile = () => {
     setNewTeams(""); 
   };
 
+  
   const handleRemoveTeam = (teamToRemove) => {
     const updatedTeams = user.favoriteTeams.filter((team) => team !== teamToRemove);
     updateFavoriteTeams(updatedTeams);

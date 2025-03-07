@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
+import { Link, useNavigate } from "react-router-dom";
 
 const Register = () => {
   const { register } = useAuth();
@@ -11,73 +11,72 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleRegister = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const success = register(username, email, password);
+    setError("");
+
+    console.log("Próba rejestracji, username:", username, "email:", email);
+    const success = await register(username, email, password);
+    console.log("Wynik rejestracji:", success);
+
     if (success) {
+      console.log("Rejestracja udana, przekierowuję...");
       navigate("/");
     } else {
-      setError("Nazwa użytkownika lub e-mail są już zajęte.");
+      setError("Rejestracja nie powiodła się. Email może być już w użyciu lub dane są nieprawidłowe.");
     }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <form
-        onSubmit={handleRegister}
-        className="p-6 bg-white rounded shadow-lg max-w-sm w-full"
-      >
-        <h2 className="text-2xl font-semibold mb-4 text-center">
-          Rejestracja
-        </h2>
-        
-        {error && <p className="text-red-500 mb-4">{error}</p>}
+      <div className="p-6 bg-white rounded shadow-lg max-w-md w-full">
+        <h2 className="text-2xl font-semibold text-center mb-4">Rejestracja</h2>
 
-        <input
-          type="text"
-          placeholder="Nazwa użytkownika"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-          className="w-full p-2 border rounded mb-4"
-        />
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
-        <input
-          type="email"
-          placeholder="Adres e-mail"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="w-full p-2 border rounded mb-4"
-        />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="text"
+            placeholder="Nazwa użytkownika"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="w-full p-2 border rounded"
+            required
+          />
 
-        <input
-          type="password"
-          placeholder="Hasło"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="w-full p-2 border rounded mb-4"
-        />
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full p-2 border rounded"
+            required
+          />
 
-        <button
-          type="submit"
-          className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
-        >
-          Zarejestruj się
-        </button>
+          <input
+            type="password"
+            placeholder="Hasło"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full p-2 border rounded"
+            required
+          />
 
-        <p className="mt-4 text-center">
-          Masz już konto?{" "}
           <button
-            type="button"
-            onClick={() => navigate("/")}
-            className="text-blue-600 hover:underline"
+            type="submit"
+            className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
           >
-            Zaloguj się
+            Zarejestruj się
           </button>
+        </form>
+
+        <p className="mt-2 text-center">
+          Masz już konto?{" "}
+          <Link to="/login" className="text-blue-500 hover:underline">
+            Zaloguj się
+          </Link>
         </p>
-      </form>
+      </div>
     </div>
   );
 };
